@@ -1,18 +1,18 @@
 import java.util.*;
 public class GraphNode{
-	private ArrayList<GraphNode> adjacent;
+	private ArrayList<Connection> adjacent;
 	private String id;
-	private ArrayList<Integer> weights;
+	// private ArrayList<Integer> weights;
 	private boolean visited;
 	public GraphNode(String id){
-		adjacent = new ArrayList<GraphNode>();
-		weights = new ArrayList<Integer>();
+		adjacent = new ArrayList<Connection>();
+		// weights = new ArrayList<Integer>();
 		this.id = id;
 		visited = false;
 	}
-	public void addConn(GraphNode neighbor, int weight){
-		adjacent.add(neighbor);
-		weights.add(weight);
+	public void addConn(Connection input){
+		adjacent.add(input);
+		// weights.add(weight);
 	}
 	public String toString(){
 		String out = "";
@@ -33,12 +33,12 @@ public class GraphNode{
 		// out += id;
 		out += "\n" +this + " is connected to: \n\t";
 		for(int  j = 0; j < adjacent.size(); j++){
-			out += adjacent.get(j) + " weight: " + weights.get(j) + "\n\t";
+			out += adjacent.get(j).getOther(this) + " weight: " + adjacent.get(j).getWeight() + "\n\t";
 		} 
 		for(int i = 0; i < adjacent.size(); i++){
-			if(!adjacent.get(i).getVisited()){
+			if(!adjacent.get(i).getOther(this).getVisited()){
 				// adjacent.get(i).setVisited(true);
-				out += adjacent.get(i).printGraph();
+				out += adjacent.get(i).getOther(this).printGraph();
 			}
 		}
 		return out;
