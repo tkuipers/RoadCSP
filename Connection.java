@@ -2,6 +2,7 @@ public class Connection{
 	private int weight;
 	private GraphNode from;
 	private GraphNode to;
+	private int travelCount;
 	public Connection(int weight, GraphNode from, GraphNode to){
 		this.weight = weight;
 		this.to = to;
@@ -15,6 +16,12 @@ public class Connection{
 	}
 	public GraphNode getTo(){
 		return to;
+	}
+	public int getCount(){
+		return travelCount;
+	}
+	public void upCount(){
+		travelCount++;
 	}
 	public void setTo(GraphNode to){
 		this.to = to;
@@ -30,6 +37,9 @@ public class Connection{
 			return from;
 		}
 		return to;
+	}
+	public String toString(){
+		return from + " to " + to;
 	}
 
 }

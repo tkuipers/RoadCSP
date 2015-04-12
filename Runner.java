@@ -1,5 +1,7 @@
 public class Runner{
 	public static void main(String[] args){
-		System.out.println(new Graph());
+		Graph graph = new Graph();
+		System.out.println(graph);
+		System.out.println(new Evaluator(graph));
 	}
 }

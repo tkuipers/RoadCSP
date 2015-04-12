@@ -19,6 +19,9 @@ public class GraphNode{
 		out += id;
 		return out;
 	}
+	public ArrayList<Connection> getAdjacent(){
+		return adjacent;
+	}
 	// 
 	public boolean getVisited(){
 		return visited;

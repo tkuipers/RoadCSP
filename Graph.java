@@ -1,4 +1,6 @@
+import java.util.*;
 public class Graph{
+	private ArrayList<Connection> allConns;
 	private GraphNode head;
 	/*
 		a1---------10----------a2
@@ -14,9 +16,10 @@ public class Graph{
 		|		/      \		|
 		|	   /	    \		|
 		c1----c2---------c3----c4
-		   3         4       3
+		   3        4        3
 	*/
 	public Graph(){
+		allConns = new ArrayList<Connection>();
 		head = new GraphNode("a1");
 		GraphNode a1 = head;
 		GraphNode a2 = new GraphNode("a2");
@@ -42,6 +45,7 @@ public class Graph{
 	}
 	public void makeConn(GraphNode firstNode, GraphNode secondNode, int weight){
 		Connection newConn = new Connection(weight, firstNode, secondNode);
+		allConns.add(newConn);
 		firstNode.addConn(newConn);
 		secondNode.addConn(newConn);
 	}
@@ -50,6 +54,20 @@ public class Graph{
 		// out += getGraph(out);
 		out += head.printGraph();
 		return out;
+	}
+	public int getUntravelled(){
+		int count = 0;
+		for(int i = 0; i < allConns.size(); i++){
+			System.out.println("Checking " + allConns.get(i));
+			if(allConns.get(i).getCount() == 0){
+					System.out.println("incrementing");
+					count++;
+			}
+		}
+		return count;
+	}
+	public GraphNode getHead(){
+		return head;
 	}
 	// public void addConnection
 	// public String getGraph(String)
