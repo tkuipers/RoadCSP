@@ -84,14 +84,18 @@ public class GraphNode{
 	}
 	public void increment(){
 		if(!truck.isEmpty()){
-			weighOptions();
-			truck.remove(0);
+			// weighOptions();
+			// truck.remove(0);
+			for(int i = 0; i < truck.size(); i++){
+				weighOptions(truck.get(i));
+			}
+			truck = new ArrayList<Truck>();
 		}
 	}
-	public void weighOptions(){
+	public void weighOptions(Truck inTruck){
 		double bestOp = -0.5;
 		int outAddress = 0;
-		if(truck.get(0).getType() == 1){
+		if(inTruck.getType() == 1){
 			for(int i = 0; i < adjacent.size(); i++){
 				double tempNum = recSearch(adjacent.get(i).getOther(this), adjacent.get(i).getScrapeNeeds(), 0, Constant.maxRec, 1);
 				// System.out.println("DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + recSearch(adjacent.get(i).getOther(this), 1, 0, Constant.maxRec));
@@ -101,7 +105,7 @@ public class GraphNode{
 				}
 			}
 		}
-		if(truck.get(0).getType() == 2){
+		if(inTruck.getType() == 2){
 			for(int i = 0; i < adjacent.size(); i++){
 				double tempNum = recSearch(adjacent.get(i).getOther(this), adjacent.get(i).getSandNeeds(), 0, Constant.maxRec, 2);
 				// System.out.println("DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + recSearch(adjacent.get(i).getOther(this), 1, 0, Constant.maxRec));
@@ -111,9 +115,19 @@ public class GraphNode{
 				}
 			}
 		}
+		if(inTruck.getType() == 3){
+			for(int i = 0; i < adjacent.size(); i++){
+				double tempNum = recSearch(adjacent.get(i).getOther(this), adjacent.get(i).getRemoveNeeds(), 0, Constant.maxRec, 3);
+				// System.out.println("DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + recSearch(adjacent.get(i).getOther(this), 1, 0, Constant.maxRec));
+				if(tempNum > bestOp){
+					bestOp = tempNum;
+					outAddress = i;
+				}
+			}
+		}
 		// System.out.println("THE BEST PATH IS TO TAKE \n\t" + adjacent.get(outAddress).toShortString() + "\n\twith a value of " + bestOp);
 		if(outAddress != -1){
-			adjacent.get(outAddress).sendTruck(truck.get(0), this);
+			adjacent.get(outAddress).sendTruck(inTruck, this);
 		}
 	}
 	public double recSearch(GraphNode parent, double prevVal, int curDepth, int maxDepth, int type){
@@ -131,6 +145,15 @@ public class GraphNode{
 		if(type == 2){
 			for(int i = 0; i < parent.getAdjacent().size(); i++){
 				double poss = prevVal * parent.getAdjacent().get(i).getSandNeeds();
+				if(poss > best){
+					best = poss;
+					address = i;
+				}
+			}
+		}
+		if(type == 3){
+			for(int i = 0; i < parent.getAdjacent().size(); i++){
+				double poss = prevVal * parent.getAdjacent().get(i).getRemoveNeeds();
 				if(poss > best){
 					best = poss;
 					address = i;

@@ -71,6 +71,9 @@ public class Graph{
 		firstNode.addConn(newConn);
 		secondNode.addConn(newConn);
 	}
+	public ArrayList<Truck> getTruck(){
+		return allTrucks;
+	}
 	public void setStatus(int status){
 		snowStatus = status;
 		for(int i = 0; i < allConns.size(); i++){
@@ -100,8 +103,10 @@ public class Graph{
 				for(int j = 0; j < path.size(); j++){
 					out += path.get(j) + "\n";
 				}
+				out += path.size() + " roads.\n";
 			}
 		}
+		out += "For a total of: " + allTrucks.size() + " trucks.";
 		return out;
 	}
 	public void addTruck(Truck inTruck){
@@ -113,16 +118,31 @@ public class Graph{
 // 
 			// System.out.println(allNodes.get(i).printGraph());
 		// }
-		boolean firstSpawn = true;
+		boolean firstScrapeSpawn = true;
+		boolean firstSandSpawn = true;
+		boolean firstRemoveSpawn = true;
 		for(int i = 0; i < allNodes.size(); i++){
 			// allConns.
 			allNodes.get(i).increment();
 		}
 		for(int i = 0; i < allConns.size(); i++){
 			allConns.get(i).increment();
-			if(allConns.get(i).getScrapeNeeds() > Constant.cutOff && firstSpawn){
-				firstSpawn = false;
+			if(allConns.get(i).getScrapeNeeds() > Constant.cutOff && firstScrapeSpawn){
+				firstScrapeSpawn = false;
 				Truck newTruck = new Scraper("varScraper");
+				allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
+				allTrucks.add(newTruck);
+			}
+			if(allConns.get(i).getSandNeeds() > Constant.cutOff && firstSandSpawn){
+				// System.out.println("BUILDING A SANDER");
+				firstSandSpawn = false;
+				Truck newTruck = new Scraper("varSander");
+				allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
+				allTrucks.add(newTruck);
+			}
+			if(allConns.get(i).getRemoveNeeds() > Constant.cutOff && firstRemoveSpawn){
+				firstRemoveSpawn = false;
+				Truck newTruck = new Scraper("varRemover");
 				allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
 				allTrucks.add(newTruck);
 			}

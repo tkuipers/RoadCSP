@@ -1,3 +1,4 @@
+import java.util.*;
 public class Connection{
 	private int weight;
 	private GraphNode from;
@@ -5,28 +6,32 @@ public class Connection{
 	private int travelCount;
 	private double needsScrape;
 	private double needSand;
-	private Truck plowTruck;
+	private ArrayList<Truck> plowTruck;
 	private GraphNode destination;
 	private boolean counting;
-	private int count;
+	private ArrayList<Integer> count;
 	private int priority;
 	private int status;
+	private double removeNeeds;
+	private double snowAmount;
 	public Connection(int weight, GraphNode from, GraphNode to, int priority){
+		plowTruck = new ArrayList<Truck>();
 		this.weight = weight;
 		this.to = to;
 		this.from = from;
 		counting = false;
-		count = -1;
+		count = new ArrayList<Integer>();
 		this.priority = priority;
 		status = 0;
 		needsScrape = 0.1;
 		needSand = 0.1;
+		count  = new ArrayList<Integer>();
 	}
 	public void sendTruck(Truck inTruck, GraphNode fromNode){
 		inTruck.setDestination(getOther(fromNode));
-		plowTruck = inTruck;
+		plowTruck.add(inTruck);
 		counting = true;
-		count = 0;
+		count.add(0);
 	}
 	public int getWeight(){
 		return weight;
@@ -66,12 +71,37 @@ public class Connection{
 			needsScrape += ((1.0/Constant.secondPriPlowRate) * status);
 			needSand += ((1.0/Constant.secondPriPlowRate) * status);
 		}
+		if(status == 1){
+			snowAmount += 0.1;
+		}
+		if(status == 2){
+			snowAmount += 0.2;
+		}
 	}
 	public double getScrapeNeeds(){
 		return needsScrape;
 	}
 	public double getSandNeeds(){
-		return needsScrape * needSand;
+		return needSand;
+	}
+	public double getRemoveNeeds(){
+		if(priority == 1 || priority == 2){
+			if(snowAmount > Constant.highPriSnowCut){
+				removeNeeds =  1;
+			}
+		}
+		if(priority == 3){
+			if(snowAmount > Constant.lowPriSnowCut){
+				removeNeeds =  1;
+			}
+		}
+		//problem here, will start plowing residential before it finishes everywhere else
+		if(priority == 4){
+			if(status == 0){
+				removeNeeds =  1;
+			}
+		}
+		return removeNeeds;
 	}
 	public int getCount(){
 		return travelCount;
@@ -103,9 +133,11 @@ public class Connection{
 	public String toString(){
 		String out = "";
 		out += from + " to " + to + "\n\twith a weight of " + weight;
-		if(plowTruck != null){
-			out += "\n\t\tcontains Truck:" + plowTruck;
-			out += "\n\t\tdestination is: " + plowTruck.getDestination();
+		if(plowTruck.size() != 0){
+			for(int i = 0; i < plowTruck.size(); i++){
+				out += "\n\t\tcontains Truck:" + plowTruck.get(i);
+				out += "\n\t\tdestination is: " + plowTruck.get(i).getDestination();
+			}
 		} 
 		else{
 			out += "\n\t\tContains No Trucks";
@@ -114,17 +146,24 @@ public class Connection{
 	}
 	public void increment(){
 		incrementNeeds();
-		if(plowTruck != null){
-			if(counting){
-				needsScrape = -1.0;
-				count++;
-			}
-			if(count >= (weight/plowTruck.getSpeed())){
-				plowTruck.getDestination().sendTruck(plowTruck);
-				plowTruck = null;
-				needsScrape = 0.0;
-				count = -1;
-				counting = false;
+		for(int i = 0; i < plowTruck.size(); i++){
+			Truck curPlowTruck = plowTruck.get(i);
+				count.set(i, count.get(i) + 1);
+			if(count.get(i) >= (weight/curPlowTruck.getSpeed())){
+				curPlowTruck.getDestination().sendTruck(curPlowTruck);
+				if(curPlowTruck.canScrape()){
+					needsScrape = 0.0;
+				}
+				if(curPlowTruck.canSand()){
+					// needsScrape = 0.0;
+					needSand = 0.0;
+				}
+				if(curPlowTruck.canRemove()){
+					removeNeeds = 0.0;
+				}
+				count.remove(((int) i));
+				// counting = false;
+				plowTruck.remove(curPlowTruck);
 			}
 		}
 
