@@ -111,13 +111,22 @@ public class Graph{
 			path = tempTruck.getPath();
 			if(path.size() != 0){
 				out += "" + tempTruck + "\n";
+				int count = 0;
 				for(int j = 0; j < path.size(); j++){
-					out += path.get(j) + "\n";
+					if(j >= 2 && path.get(j) != path.get(j-2)){
+						out += path.get(j) + "\n";
+						count++;
+					}
+					if(j < 2){
+						out += path.get(j) + "\n";
+						count++;
+
+					}
 				}
-				out += path.size() + " roads.\n";
+				out += count + " roads.\n";
 			}
 		}
-		out += "For a total of: " + allTrucks.size() + " trucks.";
+		out +=  allTrucks.size() + " trucks.";
 		return out;
 	}
 	//add a truck to the alltrucks ArrayList

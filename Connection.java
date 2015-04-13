@@ -198,7 +198,7 @@ public class Connection{
 					needSand = 0.1;
 				}
 				if(curPlowTruck.canRemove()){
-					removeNeeds = 0.1;
+					removeNeeds = 0.05;
 					snowAmount = 0.0;
 				}
 				count.remove(((int) i));
