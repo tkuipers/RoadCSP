@@ -1,10 +1,11 @@
+//A Class containing all of the contants used in the program
 public class Constant{
 	//How often, in minutes, does a priority road need to be plowed
 	public static final double firstPriPlowRate = 240; 
 	//How often, in minutes, does a secondary road need to be plowed
 	public static final double secondPriPlowRate = 480; 
 	//How many minutes do you want to run the simulation for
-	public static final int itCount = 200; 
+	public static final int itCount = 110000; 
 	//How Many roads in advance do you want the tree search to look? 
 	public static final int maxRec = 5; 
 	//How far over you priority do you want to go before you call in another truck

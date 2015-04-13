@@ -1,4 +1,5 @@
 import java.util.*;
+// The truck class that different machines extend from
 public class Truck{
 	private String id;
 	private GraphNode dest;
@@ -8,10 +9,6 @@ public class Truck{
 	private boolean canSand;
 	private boolean canRemove;
 	private int type;
-	//type1 = scarper
-	//type2 = sander
-	//type3 = snow remover
-	// private int type;
 	public Truck(String id, int type, double upm, boolean scrape, boolean sand, boolean remove){ //units per minute
 		path = new ArrayList<GraphNode>();
 		this.id = id;
@@ -38,6 +35,7 @@ public class Truck{
 	public boolean canSand(){
 		return canSand;
 	}
+	//check to see if the node 4 spots back is the same, if so, check to see if the node 2 spots back is the same, if they are, we need to remove
 	public void addToPath(GraphNode in){
 		// System.out.println("ADDING " + in + "  THE TRUCK PATH");
 		path.add(in);

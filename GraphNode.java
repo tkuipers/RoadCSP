@@ -1,60 +1,58 @@
 import java.util.*;
+//A Class to represent intersection
+//Used to point the truck in it's new direction after entering the intersection
 public class GraphNode{
 	private ArrayList<Connection> adjacent;
 	private String id;
-	// private boolean hasTruck;
 	private ArrayList<Truck> truck;
-	// private double needsPlow;
-	// private ArrayList<Integer> weights;
 	private boolean visited;
-	public GraphNode(String id){
+	private Graph parent;
+	public GraphNode(String id, Graph parent){
 		adjacent = new ArrayList<Connection>();
 		truck = new ArrayList<Truck>();
-		// weights = new ArrayList<Integer>();
 		this.id = id;
 		visited = false;
+		this.parent = parent;
 	}
+	//add a connection(road) to another intersection
 	public void addConn(Connection input){
 		adjacent.add(input);
 		// weights.add(weight);
 	}
-	// public ArrayList<Connection> getAdjacent(){
-		// return adjacent;
-	// }
+	//Send a truck down a road to another intersection
 	public void sendTruck(Truck inTruck){
 		inTruck.addToPath(this);
 		truck.add(inTruck);
 	}
-	public int getConnNum(){
-		return adjacent.size();
-	}
+	//toString method.  returns the id of the intersection
 	public String toString(){
 		String out = "";
 		out += id;
 		return out;
 	}
+	//add a truck to the intersection
 	public void addTruck(Truck inTruck){
 		truck.add(inTruck);
 	}
+	//check if the intersection has a truck in it
 	public boolean hasTruck(){
 		if(truck.size() == 0){
 			return true;
 		}
 		return false;
 	}
+	//remove a truck from the intersection
 	public void removeTruck(Truck inTruck){
 		truck.remove(inTruck);
 	}
+	//get all connections running into the intersection
 	public ArrayList<Connection> getAdjacent(){
 		return adjacent;
 	}
-	// 
-	public boolean getVisited(){
-		return visited;
+	public Graph getGraph(){
+		return parent;
 	}
-	public void setVisited(boolean input){
-		visited = input;
-	}
+	//print detailed information about the intersection... all connections and the amount of trucks in it.
 	public String printGraph(){
 		// System.out.println("hey");
 		// visited = true;
@@ -82,6 +80,7 @@ public class GraphNode{
 		// }
 		return out;
 	}
+	//go through a unit of time.  if the intersection contains a truck. it will send the truck out.
 	public void increment(){
 		if(!truck.isEmpty()){
 			// weighOptions();
@@ -92,77 +91,63 @@ public class GraphNode{
 			truck = new ArrayList<Truck>();
 		}
 	}
+	//recursively fin the best bath for the truck.  Looks x roads in advance based on the number set in the constants file.
 	public void weighOptions(Truck inTruck){
 		double bestOp = -0.5;
 		int outAddress = 0;
-		if(inTruck.getType() == 1){
-			for(int i = 0; i < adjacent.size(); i++){
-				double tempNum = recSearch(adjacent.get(i).getOther(this), adjacent.get(i).getScrapeNeeds(), 0, Constant.maxRec, 1);
-				// System.out.println("DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + recSearch(adjacent.get(i).getOther(this), 1, 0, Constant.maxRec));
-				if(tempNum > bestOp){
-					bestOp = tempNum;
-					outAddress = i;
-				}
+		// if(inTruck.getType() == 1){
+		for(int i = 0; i < adjacent.size(); i++){
+			double needs = 1.0;
+			if(inTruck.canScrape()){
+				needs *= adjacent.get(i).getScrapeNeeds();
+			}
+			if(inTruck.canSand()){
+				needs *= adjacent.get(i).getSandNeeds();
+			}
+			if(inTruck.canRemove()){
+				needs *= adjacent.get(i).getRemoveNeeds();
+			}
+			// System.out.println("NEEDS IS " + needs);
+			double tempNum = recSearch(adjacent.get(i).getOther(this), needs, 0, Constant.maxRec, 1, inTruck);
+			// System.out.println("TRUCK "+ inTruck+" IS DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + tempNum);
+			if(tempNum > bestOp){
+				bestOp = tempNum;
+				outAddress = i;
 			}
 		}
-		if(inTruck.getType() == 2){
-			for(int i = 0; i < adjacent.size(); i++){
-				double tempNum = recSearch(adjacent.get(i).getOther(this), adjacent.get(i).getSandNeeds(), 0, Constant.maxRec, 2);
-				// System.out.println("DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + recSearch(adjacent.get(i).getOther(this), 1, 0, Constant.maxRec));
-				if(tempNum > bestOp){
-					bestOp = tempNum;
-					outAddress = i;
-				}
-			}
-		}
-		if(inTruck.getType() == 3){
-			for(int i = 0; i < adjacent.size(); i++){
-				double tempNum = recSearch(adjacent.get(i).getOther(this), adjacent.get(i).getRemoveNeeds(), 0, Constant.maxRec, 3);
-				// System.out.println("DEBATING \n\t" + adjacent.get(i).toShortString() + "\n\twith a value of " + recSearch(adjacent.get(i).getOther(this), 1, 0, Constant.maxRec));
-				if(tempNum > bestOp){
-					bestOp = tempNum;
-					outAddress = i;
-				}
-			}
-		}
+		// }
 		// System.out.println("THE BEST PATH IS TO TAKE \n\t" + adjacent.get(outAddress).toShortString() + "\n\twith a value of " + bestOp);
 		if(outAddress != -1){
+			if(inTruck.canRemove()){
+				// System.out.println(this.getGraph() + "\nTHE REMOVAL TRUCK BEST OPTION IS AT " + this + " AND SHOULD GO " + adjacent.get(outAddress).toShortString() + " WITH A VALUE OF " + bestOp + "\n\t" + "the other value is " + recSearch(adjacent.get(outAddress).getOther(this), 1.0, 0, Constant.maxRec, 1, inTruck) + "\n\tRemovalNeed" + adjacent.get(outAddress).getRemoveNeeds());	
+			}	
 			adjacent.get(outAddress).sendTruck(inTruck, this);
 		}
 	}
-	public double recSearch(GraphNode parent, double prevVal, int curDepth, int maxDepth, int type){
+	//recursively search through the tree
+	public double recSearch(GraphNode parent, double prevVal, int curDepth, int maxDepth, int type, Truck inTruck){
 		double best = -1.0;
 		int address = -1;
-		if(type == 1){
-			for(int i = 0; i < parent.getAdjacent().size(); i++){
-				double poss = prevVal * parent.getAdjacent().get(i).getScrapeNeeds();
-				if(poss > best){
-					best = poss;
-					address = i;
-				}
+		// if(type == 1){
+		for(int i = 0; i < parent.getAdjacent().size(); i++){
+			double poss = prevVal;
+			if(inTruck.canScrape()){
+				poss *= parent.getAdjacent().get(i).getScrapeNeeds();
 			}
-		}
-		if(type == 2){
-			for(int i = 0; i < parent.getAdjacent().size(); i++){
-				double poss = prevVal * parent.getAdjacent().get(i).getSandNeeds();
-				if(poss > best){
-					best = poss;
-					address = i;
-				}
+			if(inTruck.canSand()){
+				poss *= parent.getAdjacent().get(i).getSandNeeds();
 			}
-		}
-		if(type == 3){
-			for(int i = 0; i < parent.getAdjacent().size(); i++){
-				double poss = prevVal * parent.getAdjacent().get(i).getRemoveNeeds();
-				if(poss > best){
-					best = poss;
-					address = i;
-				}
+			if(inTruck.canRemove()){
+				poss *= parent.getAdjacent().get(i).getRemoveNeeds();
+			}
+			if(poss > best){
+				best = poss;
+				address = i;
 			}
 		}
 		if(curDepth == maxDepth){
 			return best;
 		}
-		return best * recSearch(parent.getAdjacent().get(address).getOther(parent), best, curDepth + 1, maxDepth, type);
+		return best * recSearch(parent.getAdjacent().get(address).getOther(parent), best, curDepth + 1, maxDepth, type, inTruck);
 	}
 }

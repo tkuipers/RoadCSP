@@ -1,4 +1,5 @@
 import java.util.*;
+//the run file for the entire program
 public class Runner{
 	public static void main(String[] args){
 		Graph graph = new Graph();
@@ -6,7 +7,7 @@ public class Runner{
 		// graph.getHead().sendTruck(truck1);
 		// graph.addTruck(truck1);
 		// graph.getHead().sendTruck(truck1);
-		graph.setStatus(0);
+		// graph.setStatus(0);
 		graph.setStatus(1);
 		for(int i = 0; i < Constant.spawnScrape; i++){
 			Truck truck1 = new Scraper("startScraper");
@@ -29,10 +30,18 @@ public class Runner{
 
 
 		for(int i = 0; i < Constant.itCount; i++){
-			// System.out.println("\n\nIteration: " + i + "\n" + graph);
-			// System.out.println("AT ITERATION " + i + " the bottom truck is " + )
+			// System.out.println("\n\n\n\n\n\nITEREATION " + i + ":\n" + graph);
 			graph.increment();
 		}
+		System.out.println("STOPPED SNOWING");
+		// graph.setStatus(0);
+		// for(int i = 0; i < Constant.itCount; i++){
+			// graph.increment();
+		// }
+		// graph.setStatus(1);
+		// for(int i = 0; i < Constant.itCount; i++){
+			// graph.increment();
+		// }
 		// System.out.println("TRUCK PATH");
 		System.out.println(graph.getPathString());
 		// System.out.println("The ones with an odd number of connections");
