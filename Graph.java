@@ -4,6 +4,7 @@ public class Graph{
 	private GraphNode head;
 	private ArrayList<GraphNode> allNodes;
 	private ArrayList<Truck> allTrucks;
+	private int snowStatus;
 	/*
 		a1---------10----------a2
 		|						|
@@ -29,6 +30,8 @@ public class Graph{
 
 		head = new GraphNode("a1");
 
+		snowStatus = 0;
+
 		GraphNode a1 = head;
 		GraphNode a2 = new GraphNode("a2");
 		GraphNode b1 = new GraphNode("b1");
@@ -49,24 +52,30 @@ public class Graph{
 		allNodes.add(c3);
 		allNodes.add(c4);
 
-		makeConn(a1, a2, 10);
-		makeConn(a1, b1, 5);
-		makeConn(b1, b2, 5);
-		makeConn(b2, b3, 5);
-		makeConn(a2, b3, 5);
-		makeConn(b1, c1, 5);
-		makeConn(c1, c2, 3);
-		makeConn(c2, c3, 4);
-		makeConn(c3, c4, 3);
-		makeConn(c4, b3, 5);
-		makeConn(c2, b2, 4);
-		makeConn(c3, b2, 4);
+		makeConn(a1, a2, 10, 1);
+		makeConn(a1, b1, 5, 1);
+		makeConn(b1, b2, 5, 2);
+		makeConn(b2, b3, 5, 1);
+		makeConn(a2, b3, 5, 1);
+		makeConn(b1, c1, 5, 2);
+		makeConn(c1, c2, 3, 1);
+		makeConn(c2, c3, 4, 1);
+		makeConn(c3, c4, 3, 1);
+		makeConn(c4, b3, 5, 1);
+		makeConn(c2, b2, 4, 3);
+		makeConn(c3, b2, 4, 3);
 	}
-	public void makeConn(GraphNode firstNode, GraphNode secondNode, int weight){
-		Connection newConn = new Connection(weight, firstNode, secondNode);
+	public void makeConn(GraphNode firstNode, GraphNode secondNode, int weight, int priority){
+		Connection newConn = new Connection(weight, firstNode, secondNode, priority);
 		allConns.add(newConn);
 		firstNode.addConn(newConn);
 		secondNode.addConn(newConn);
+	}
+	public void setStatus(int status){
+		snowStatus = status;
+		for(int i = 0; i < allConns.size(); i++){
+			allConns.get(i).setStatus(status);
+		}
 	}
 	public String toString(){
 		String out = "";
@@ -111,9 +120,9 @@ public class Graph{
 		}
 		for(int i = 0; i < allConns.size(); i++){
 			allConns.get(i).increment();
-			if(allConns.get(i).getNeeds() > Constant.cutOff && firstSpawn){
+			if(allConns.get(i).getScrapeNeeds() > Constant.cutOff && firstSpawn){
 				firstSpawn = false;
-				Truck newTruck = new Truck("varTruck");
+				Truck newTruck = new Scraper("varScraper");
 				allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
 				allTrucks.add(newTruck);
 			}

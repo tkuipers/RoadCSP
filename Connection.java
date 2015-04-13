@@ -3,17 +3,24 @@ public class Connection{
 	private GraphNode from;
 	private GraphNode to;
 	private int travelCount;
-	private double needsTruck;
+	private double needsScrape;
+	private double needSand;
 	private Truck plowTruck;
 	private GraphNode destination;
 	private boolean counting;
 	private int count;
-	public Connection(int weight, GraphNode from, GraphNode to){
+	private int priority;
+	private int status;
+	public Connection(int weight, GraphNode from, GraphNode to, int priority){
 		this.weight = weight;
 		this.to = to;
 		this.from = from;
 		counting = false;
 		count = -1;
+		this.priority = priority;
+		status = 0;
+		needsScrape = 0.1;
+		needSand = 0.1;
 	}
 	public void sendTruck(Truck inTruck, GraphNode fromNode){
 		inTruck.setDestination(getOther(fromNode));
@@ -30,11 +37,41 @@ public class Connection{
 	public GraphNode getTo(){
 		return to;
 	}
-	public void incrementNeeds(){
-		needsTruck += (1.0/Constant.plowRate); //30 minutes is how often the road needs to be plowed.
+	//if the storm status is on alert, set residential streets to being unneeded
+	public void setStatus(int newStatus){
+		if(newStatus == 0){
+			status = newStatus;
+			if(priority == 3 || priority == 4){
+				needsScrape = 1;
+			}
+		}
+		else if(newStatus == 1 || newStatus == 2){
+			status = newStatus;
+			if(priority == 3 || priority == 4){
+				needsScrape = 0.1;
+			}
+		}
 	}
-	public double getNeeds(){
-		return needsTruck;
+
+	//priority 1 = freeways, arterial roadways, business districts, bus ways
+	//priority 2 = collector/bus route roadways, transit park and ride access roads
+	//priority 3 = local industrial roadways
+	//priority 4 = residential roadways, alleys
+	public void incrementNeeds(){
+		if(priority == 1 ){
+			needsScrape += ((1.0/Constant.firstPriPlowRate) * status);
+			needSand += ((1.0/Constant.firstPriPlowRate) * status);
+		}
+		if(priority == 2 ){
+			needsScrape += ((1.0/Constant.secondPriPlowRate) * status);
+			needSand += ((1.0/Constant.secondPriPlowRate) * status);
+		}
+	}
+	public double getScrapeNeeds(){
+		return needsScrape;
+	}
+	public double getSandNeeds(){
+		return needsScrape * needSand;
 	}
 	public int getCount(){
 		return travelCount;
@@ -59,7 +96,7 @@ public class Connection{
 	}
 	public String toShortString(){
 		String out = "";
-		out += from + " to " + to + "\n\twith a need of " + needsTruck;
+		out += from + " to " + to + "\n\twith a need of " + needsScrape;
 		return out;
 
 	}
@@ -77,16 +114,18 @@ public class Connection{
 	}
 	public void increment(){
 		incrementNeeds();
-		if(counting){
-			needsTruck = -1.0;
-			count++;
-		}
-		if(count >= (weight/2)){
-			plowTruck.getDestination().sendTruck(plowTruck);
-			plowTruck = null;
-			needsTruck = 0.0;
-			count = -1;
-			counting = false;
+		if(plowTruck != null){
+			if(counting){
+				needsScrape = -1.0;
+				count++;
+			}
+			if(count >= (weight/plowTruck.getSpeed())){
+				plowTruck.getDestination().sendTruck(plowTruck);
+				plowTruck = null;
+				needsScrape = 0.0;
+				count = -1;
+				counting = false;
+			}
 		}
 
 	}

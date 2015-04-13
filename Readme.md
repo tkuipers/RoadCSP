@@ -1,0 +1,1 @@
+A basic SCSP solver that will be used to plan snowplow routes
