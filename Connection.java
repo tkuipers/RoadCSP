@@ -72,10 +72,10 @@ public class Connection{
 			needSand += ((1.0/Constant.secondPriPlowRate) * status);
 		}
 		if(status == 1){
-			snowAmount += 0.1;
+			snowAmount += Constant.statOneStorm;
 		}
 		if(status == 2){
-			snowAmount += 0.2;
+			snowAmount += Constant.statTwoStorm;
 		}
 	}
 	public double getScrapeNeeds(){
