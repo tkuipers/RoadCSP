@@ -1,7 +1,16 @@
 public class Runner{
 	public static void main(String[] args){
 		Graph graph = new Graph();
-		System.out.println(graph);
-		System.out.println(new Evaluator(graph));
+		Truck truck1 = new Truck("truck1");
+		// graph.getHead().sendTruck(truck1);
+		graph.addTruck(truck1);
+		graph.getHead().sendTruck(truck1);
+		for(int i = 0; i < Constant.itCount; i++){
+			// System.out.println("\n\nIteration: " + i + "\n" + graph);
+			graph.increment();
+		}
+		// System.out.println("TRUCK PATH");
+		System.out.println(graph.getPathString());
+		// System.out.println("The ones with an odd number of connections");
 	}
 }
