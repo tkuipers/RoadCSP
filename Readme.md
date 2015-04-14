@@ -4,7 +4,7 @@ This program is a simple Semi-Ring Constraint Satisfation problem that you can u
 ##Running the Program
 To run the program, simply change the constants to the values that you want to use, compile the program, and run java Runner from your terminal
 
-##Constant Class Values
+###Constant Class Values
 How often, in minutes, does a priority road need to be plowed
 
 	public static final double firstPriPlowRate

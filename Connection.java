@@ -33,13 +33,6 @@ public class Connection{
 		needSand = 0.1;
 		count  = new ArrayList<Integer>();
 	}
-	//put a truck into the road, where it will be held for a certain amound of time based on the speed and will then be sent to a destination stored in the truck
-	public void sendTruck(Truck inTruck, GraphNode fromNode){
-		inTruck.setDestination(getOther(fromNode));
-		plowTruck.add(inTruck);
-		counting = true;
-		count.add(0);
-	}
 	//return the length of the road
 	public int getWeight(){
 		return weight;
@@ -70,8 +63,8 @@ public class Connection{
 			status = newStatus;
 			if(priority == 3 || priority == 4){
 				
-				needsScrape = 0.5;
-				needSand = 0.5;
+				needsScrape = 0.1;
+				needSand = 0.1;
 				removeNeeds = 0.1;
 			}
 		}
@@ -163,6 +156,7 @@ public class Connection{
 		return out;
 
 	}
+
 	//get an in depth string aof information on the road
 	public String toString(){
 		String out = "";
@@ -182,6 +176,24 @@ public class Connection{
 		out += "\n\t\tSnowAmount: " + snowAmount;
 		return out;
 	}
+	//put a truck into the road, where it will be held for a certain amound of time based on the speed and will then be sent to a destination stored in the truck
+	public void sendTruck(Truck inTruck, GraphNode fromNode){
+		inTruck.setDestination(getOther(fromNode));
+		plowTruck.add(inTruck);
+		// if(inTruck.canScrape()){
+			// needsScrape = 0.1;
+		// }
+		// if(inTruck.canSand()){
+			needsScrape = 0.0;
+			// needSand = 0.1;
+		// }
+		// if(inTruck.canRemove()){
+			// removeNeeds = 0.05;
+			// snowAmount = 0.0;
+		// }
+		counting = true;
+		count.add(0);
+	}
 	//incremenet snow values and if there is a truck, move the truck along until it gets to the point where you push it to the other intersection
 	public void increment(){
 		incrementNeeds();
@@ -194,13 +206,14 @@ public class Connection{
 					needsScrape = 0.1;
 				}
 				if(curPlowTruck.canSand()){
-					// needsScrape = 0.0;
+					needsScrape = 0.0;
 					needSand = 0.1;
 				}
 				if(curPlowTruck.canRemove()){
 					removeNeeds = 0.05;
 					snowAmount = 0.0;
 				}
+				
 				count.remove(((int) i));
 				// counting = false;
 				plowTruck.remove(curPlowTruck);
