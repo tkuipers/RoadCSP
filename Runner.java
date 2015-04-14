@@ -5,17 +5,17 @@ public class Runner{
 		Graph graph = new Graph(1);
 
 		for(int i = 0; i < Constant.spawnScrape; i++){
-			Truck truck1 = new Scraper("startScraper");
+			Truck truck1 = new Scraper("startScraper", 0);
 			graph.getHead().sendTruck(truck1);
 			graph.addTruck(truck1);
 		}
 		for(int i = 0; i < Constant.spawnSand; i++){
-			Truck truck1 = new Sander("startSander");
+			Truck truck1 = new Sander("startSander", 0);
 			graph.getHead().sendTruck(truck1);
 			graph.addTruck(truck1);
 		}
 		for(int i = 0; i < Constant.spawnRemove; i++){
-			Truck truck1 = new Remover("startRemover");
+			Truck truck1 = new Remover("startRemover", 0);
 			graph.getHead().sendTruck(truck1);
 			graph.addTruck(truck1);	
 		}

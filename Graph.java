@@ -256,7 +256,7 @@ public class Graph{
 				if(allConns.get(i).getScrapeNeeds() > Constant.cutOff && firstScrapeSpawn){
 					System.out.println("ITERATION " + itNum + " BUILDING A SCRAPER FOR NODE " + allConns.get(i));
 					firstScrapeSpawn = false;
-					Truck newTruck = new Scraper("varScraper");
+					Truck newTruck = new Scraper("varScraper", itNum);
 					allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
 					allTrucks.add(newTruck);
 					// System.out.println("\n\n\nPRINTING GRAPH");
@@ -266,7 +266,7 @@ public class Graph{
 				if(allConns.get(i).getSandNeeds() > Constant.cutOff && firstSandSpawn){
 					System.out.println("ITERATION " + itNum + "BUILDING A SANDER FOR NODE " + allConns.get(i));
 					firstSandSpawn = false;
-					Truck newTruck = new Sander("varSander");
+					Truck newTruck = new Sander("varSander", itNum);
 					allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
 					allTrucks.add(newTruck);
 					// System.exit(0);
@@ -274,7 +274,7 @@ public class Graph{
 				if(allConns.get(i).getRemoveNeeds() > Constant.cutOff && firstRemoveSpawn){
 					System.out.println("ITERATION " + itNum + "BUILDING A REMOVER FOR NODE " + allConns.get(i));
 					firstRemoveSpawn = false;
-					Truck newTruck = new Remover("varRemover");
+					Truck newTruck = new Remover("varRemover", itNum);
 					allConns.get(i).sendTruck(newTruck, allConns.get(i).getTo());
 					allTrucks.add(newTruck);
 					// System.exit(0);

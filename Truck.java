@@ -9,7 +9,8 @@ public class Truck{
 	private boolean canSand;
 	private boolean canRemove;
 	private int type;
-	public Truck(String id, int type, double upm, boolean scrape, boolean sand, boolean remove){ //units per minute
+	private int itSpawned;
+	public Truck(String id, int type, double upm, boolean scrape, boolean sand, boolean remove, int spawned){ //units per minute
 		path = new ArrayList<GraphNode>();
 		this.id = id;
 		speed = upm;
@@ -17,13 +18,14 @@ public class Truck{
 		canSand = sand;
 		canRemove = remove;
 		this.type = type;
+		itSpawned = spawned;
 	}
 	public int getType(){
 		return type;
 	}
 	public String toString(){
 		String out = "";
-		out +=  id;
+		out +=  id + " spawned at " + itSpawned;
 		return out;
 	}
 	public boolean canScrape(){

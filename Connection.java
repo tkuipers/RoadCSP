@@ -180,17 +180,16 @@ public class Connection{
 	public void sendTruck(Truck inTruck, GraphNode fromNode){
 		inTruck.setDestination(getOther(fromNode));
 		plowTruck.add(inTruck);
-		// if(inTruck.canScrape()){
-			// needsScrape = 0.1;
-		// }
-		// if(inTruck.canSand()){
-			needsScrape = 0.0;
-			// needSand = 0.1;
-		// }
-		// if(inTruck.canRemove()){
-			// removeNeeds = 0.05;
-			// snowAmount = 0.0;
-		// }
+		if(inTruck.canScrape()){
+			needsScrape = 0.1;
+		}
+		if(inTruck.canSand()){
+			needSand = 0.1;
+		}
+		if(inTruck.canRemove()){
+			removeNeeds = 0.05;
+			snowAmount = 0.0;
+		}
 		counting = true;
 		count.add(0);
 	}
