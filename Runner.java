@@ -2,7 +2,17 @@ import java.util.*;
 //the run file for the entire program
 public class Runner{
 	public static void main(String[] args){
-		Graph graph = new Graph(1);
+		// System.out.println(args[0]);
+		int graphNum = -1;
+		if(args[0] != null){
+			graphNum = Integer.parseInt(args[0]);
+		}
+		else{
+			System.out.println("You must enter which graph you are attempting to run the csp on.");
+			System.exit(0);
+		}
+		System.out.println("Creating a graph of type " + graphNum);
+		Graph graph = new Graph(graphNum);
 
 		for(int i = 0; i < Constant.spawnScrape; i++){
 			Truck truck1 = new Scraper("startScraper", 0);
@@ -23,7 +33,6 @@ public class Runner{
 
 		graph.setStatus(1);
 		for(int i = 0; i < Constant.itCount; i++){
-			// System.out.println("FIRST ROUND.\nITERATION: " + i + "\n" + graph);
 			graph.increment(i);
 		}
 

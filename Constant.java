@@ -5,11 +5,11 @@ public class Constant{
 	//How often, in minutes, does a secondary road need to be plowed
 	public static final double secondPriPlowRate = 480; 
 	//How many minutes do you want to run the simulation for
-	public static final int itCount = 200; 
+	public static final int itCount = 2000; 
 	//How Many roads in advance do you want the tree search to look? 
 	public static final int maxRec = 2; 
 	//How far over you priority do you want to go before you call in another truck
-	public static final double cutOff = 1.5; 
+	public static final double cutOff = 1.0; 
 	//How many cm/min fall in a status 1 storm
 	public static final double statOneStorm = 0.1;
 	//How many cm/min fall in a status 2 storm

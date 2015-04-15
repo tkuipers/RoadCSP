@@ -152,7 +152,7 @@ public class Connection{
 	//get a summarized version of the road
 	public String toShortString(){
 		String out = "";
-		out += from + " to " + to + "\n\twith a need of " + needsScrape;
+		// out += from + " to " + to + "\n\twith a need of " + needsScrape;
 		return out;
 
 	}

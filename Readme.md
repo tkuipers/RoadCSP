@@ -2,7 +2,7 @@
 This program is a simple Semi-Ring Constraint Satisfation problem that you can use to plan the snowplow routes in a weighted graph.
 
 ##Running the Program
-To run the program, simply change the constants to the values that you want to use, compile the program, and run java Runner from your terminal
+To run the program, simply change the constants to the values that you want to use, compile the program, and run java Runner *x* in your terminal.  x is a number 1-4 to determine the graph you want to run it on.  The visualization of each of the graphs is stored in the Graph.java file
 
 ###Constant Class Values
 How often, in minutes, does a priority road need to be plowed
